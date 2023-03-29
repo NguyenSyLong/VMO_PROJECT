@@ -6,10 +6,16 @@ import com.apartment.vmoproject.api.service.Service_FeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class Service_FeeServiceImpl implements Service_FeeService {
+
+    @Override
+    public List<Service_Fee> findByIdIsIn(List<Long> ids) {
+        return service_feeRepository.findByIdIsIn(ids);
+    }
 
     @Autowired
     private Service_FeeRepository  service_feeRepository;

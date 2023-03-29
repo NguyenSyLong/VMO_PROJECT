@@ -1,6 +1,8 @@
 package com.apartment.vmoproject.api.controller;
 
 
+import com.apartment.vmoproject.api.controller.dto.response.ApartmentDto;
+import com.apartment.vmoproject.api.model.Apartment;
 import com.apartment.vmoproject.api.model.Dweller;
 import com.apartment.vmoproject.api.model.ResponseObject;
 import com.apartment.vmoproject.api.model.Service_Fee;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/service_fee")
@@ -49,7 +52,24 @@ public class Service_FeeController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
-//    @PutMapping("/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateApartment(@PathVariable("id") Long id, @RequestBody Service_Fee service_fee){
+
+
+        service_fee.setId(id);
+        Service_Fee serviceFeeResponse = service_feeService.save(service_fee);
+
+
+        ResponseObject response = ResponseObject.builder().
+                message("Update apartment successfully!!")
+                .status("OK")
+                .data(serviceFeeResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+    }
 
 
 

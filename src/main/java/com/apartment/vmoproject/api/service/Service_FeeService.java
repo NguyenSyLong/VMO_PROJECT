@@ -2,9 +2,12 @@ package com.apartment.vmoproject.api.service;
 
 import com.apartment.vmoproject.api.model.Service_Fee;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Service_FeeService {
+    List<Service_Fee> findByIdIsIn(List<Long> ids);
+
     <S extends Service_Fee> S save(S entity);
 
     <S extends Service_Fee> Iterable<S> saveAll(Iterable<S> entities);
