@@ -9,12 +9,14 @@ import com.apartment.vmoproject.api.service.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping(path = "api/v1/apartment")
@@ -56,6 +58,34 @@ public class ApartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
+    @GetMapping("/{pageNumber}/{pageSize}/{number}")
+    public ResponseEntity<?> getAllApartmentByPaging(@PathVariable("pageNumber") int pageNumber,
+                                                     @PathVariable("pageSize") int pageSize,
+                                                     @PathVariable(name="number") String number ){
+
+        Page<Apartment> apartments = null;
+
+        if (!number.equals("null")){
+            Integer number1 = Integer.parseInt(number);
+            apartments = apartmentService.findByNumberContainingWithPagination(pageNumber,pageSize,number1);
+        }else{
+            apartments = apartmentService.findProductWithPagination(pageNumber,pageSize);
+        }
+
+
+
+        ResponseObject response = ResponseObject.builder().
+                message("Find All!!")
+                .status("OK")
+                .data(apartments)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+
+    
     @GetMapping("/{id}")
     public ResponseEntity<?> getApartmentById(@PathVariable("id") Long id){
         Optional<Apartment> apartment = apartmentService.findById(id);

@@ -1,11 +1,13 @@
 package com.apartment.vmoproject.api.service.impl;
 
+import com.apartment.vmoproject.api.model.Bill;
 import com.apartment.vmoproject.api.model.Bill_Detail;
 import com.apartment.vmoproject.api.repository.Bill_DetailRepository;
 import com.apartment.vmoproject.api.service.Bill_DetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +19,11 @@ public class Bill_DetailServiceImpl implements Bill_DetailService {
     @Override
     public <S extends Bill_Detail> S save(S entity) {
         return bill_detailRepository.save(entity);
+    }
+
+    @Override
+    public List<Bill_Detail> findByBill(Bill bill) {
+        return bill_detailRepository.findByBill(bill);
     }
 
     @Override

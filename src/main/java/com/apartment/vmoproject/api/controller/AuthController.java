@@ -6,10 +6,7 @@ import com.apartment.vmoproject.api.model.AuthenticationRequest;
 import com.apartment.vmoproject.api.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +18,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register (@RequestBody AuthenticationRequest request){
-        return ResponseEntity.ok().body(service.register(request));
+        AuthenticationResponse authenticationResponse = service.register(request);
+        return ResponseEntity.ok().body(authenticationResponse);
     }
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest request){

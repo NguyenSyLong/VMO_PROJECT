@@ -20,7 +20,9 @@ public class BillDto {
 
     private List<Long> serviceId;
 
+    private Long waterConsumption;
 
+    private Long electricConsumption;
 
 
 }

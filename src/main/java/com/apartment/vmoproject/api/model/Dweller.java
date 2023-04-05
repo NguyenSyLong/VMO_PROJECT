@@ -1,9 +1,6 @@
 package com.apartment.vmoproject.api.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,9 +36,9 @@ public class Dweller implements Serializable {
 
     private Boolean status;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "apartment_id")
-    @JsonBackReference
+    @ManyToOne(optional = false,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "apartment_id",  nullable = false)
+    @JsonIgnoreProperties("dwellers")
     private Apartment apartment;
 
 

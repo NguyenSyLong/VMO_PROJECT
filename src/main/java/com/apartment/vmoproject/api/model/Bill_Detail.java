@@ -1,15 +1,14 @@
 package com.apartment.vmoproject.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "bill_detail")
@@ -20,13 +19,13 @@ public class Bill_Detail {
     private Long id;
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "bill_id")
-    @JsonBackReference
+    @JoinColumn(name = "bill_id", nullable = false)
+    @JsonIgnoreProperties("bill_details")
     private Bill bill;
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_fee_id")
-    @JsonBackReference
+    @JoinColumn(name = "service_fee_id",nullable = false)
+    @JsonIgnoreProperties("bill_details")
     private Service_Fee service_fee;
 
 

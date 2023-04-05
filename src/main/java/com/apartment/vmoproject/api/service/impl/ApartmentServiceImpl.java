@@ -4,6 +4,8 @@ import com.apartment.vmoproject.api.model.Apartment;
 import com.apartment.vmoproject.api.repository.ApartmentRepository;
 import com.apartment.vmoproject.api.service.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,7 +72,18 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
+    public Page<Apartment> findByNumberContainingWithPagination(int pagenumber, int pageSize, Integer number) {
+        return apartmentRepository.findByNumberContaining(PageRequest.of(pagenumber,pageSize), number);
+    }
+
+    @Override
     public void deleteAll() {
         apartmentRepository.deleteAll();
+    }
+
+
+    @Override
+    public Page<Apartment> findProductWithPagination(int offset, int pageSize) {
+        return apartmentRepository.findAll(PageRequest.of(offset,pageSize));
     }
 }

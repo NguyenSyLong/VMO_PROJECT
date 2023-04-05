@@ -2,6 +2,7 @@ package com.apartment.vmoproject.api.service;
 
 import com.apartment.vmoproject.api.model.Apartment;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +34,9 @@ public interface ApartmentService {
 
     void deleteAll(Iterable<? extends Apartment> entities);
 
+    Page<Apartment> findByNumberContainingWithPagination(int pagenumber, int pageSize, Integer number);
+
     void deleteAll();
+
+    Page<Apartment> findProductWithPagination(int offset, int pageSize);
 }

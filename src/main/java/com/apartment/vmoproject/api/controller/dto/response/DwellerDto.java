@@ -30,7 +30,7 @@ public class DwellerDto {
 
     private Boolean status;
 
-    private Long apartmentId;
+    private Apartment apartment;
 }
 
 

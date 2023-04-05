@@ -6,6 +6,7 @@ import com.apartment.vmoproject.api.model.ResponseObject;
 import com.apartment.vmoproject.api.service.ApartmentService;
 import com.apartment.vmoproject.api.service.DwellerService;
 import com.apartment.vmoproject.api.service.FileService;
+import org.hibernate.annotations.NotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class DwellerController {
             @RequestParam("gender") Boolean gender,
             @RequestParam("status") Boolean status,
             @RequestParam("apartmentId") Long apartmentId
-            ) throws ParseException {
+    ) throws ParseException {
 
         Optional<Apartment> apartment = apartmentService.findById(apartmentId);
 
@@ -57,8 +58,8 @@ public class DwellerController {
 
         String backSidePath = this.fileService.saveFile(backSideImage);
 
-        Date dob = new SimpleDateFormat("dd/MM/yyyy").parse(date);
-
+        Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        apartment.get().setStatus(true);
         Dweller dwellerRequest = Dweller.builder()
                 .name(name)
                 .email(email)
@@ -73,6 +74,7 @@ public class DwellerController {
 
         Dweller dwellerResponese = dwellerService.save(dwellerRequest);
 
+
         ResponseObject responseObject = ResponseObject.builder()
                 .status("Created")
                 .message("Add dweller successfully!")
@@ -83,9 +85,71 @@ public class DwellerController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editDweller(
+            @PathVariable("id") Long id,
+            @RequestParam(name = "frontSideImage",required = false) MultipartFile frontSideImage,
+            @RequestParam(name = "backSideImage",required = false) MultipartFile backSideImage,
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("dateOfBirth") String date,
+            @RequestParam("gender") Boolean gender,
+            @RequestParam("status") Boolean status,
+            @RequestParam("apartmentId") Long apartmentId
+    ) throws ParseException {
+        String frontSidePath, backSidePath;
+        Optional<Apartment> apartment = apartmentService.findById(apartmentId);
+        Optional<Dweller> dweller = dwellerService.findById(id);
+        if(frontSideImage != null){
+            frontSidePath = this.fileService.saveFile(frontSideImage);
+        }else{
+            frontSidePath = dweller.get().getFrontSideImage();
+        }
+        if(backSideImage != null){
+            backSidePath = this.fileService.saveFile(backSideImage);
+        }else{
+            backSidePath = dweller.get().getBackSideImage();
+        }
+
+
+
+        Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        if(status==false){
+            if(apartment.get().getDwellers().size()==1){
+                apartment.get().setStatus(false);
+            }
+        }else{
+            apartment.get().setStatus(true);
+        }
+
+        Dweller dwellerRequest = Dweller.builder()
+                .name(name)
+                .email(email)
+                .frontSideImage(frontSidePath)
+                .backSideImage(backSidePath)
+                .dateOfBirth(dob)
+                .gender(gender)
+                .status(status)
+                .apartment(apartment.get())
+                .id(dweller.get().getId())
+                .build();
+
+
+        Dweller dwellerResponese = dwellerService.save(dwellerRequest);
+
+        ResponseObject responseObject = ResponseObject.builder()
+                .status("Updated")
+                .message("Add dweller successfully!")
+                .data(dwellerResponese)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+
+    }
+
 
     @GetMapping("")
-    public ResponseEntity<?> getAllDweller(){
+    public ResponseEntity<?> getAllDweller() {
         Iterable<Dweller> dwellers = dwellerService.findAll();
         List<Dweller> dwellersResponse = new ArrayList<>();
         dwellers.forEach(dwellersResponse::add);
@@ -100,20 +164,20 @@ public class DwellerController {
 
     }
 
-    @GetMapping("/{apartmentId}")
-    public ResponseEntity<?> getDwellerByApartmentId(@PathVariable("apartmentId") Long id){
-        Optional<Apartment> apartment = apartmentService.findById(id);
-        List<Dweller> dwellers = dwellerService.findByApartment(apartment.get());
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDwellerById(@PathVariable("id") Long id) {
 
+        Optional<Dweller> dweller = dwellerService.findById(id);
 
 
         ResponseObject responseObject = ResponseObject.builder()
                 .status("ok")
                 .message("Find dweller successfully!")
-                .data(dwellers)
+                .data(dweller.get())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 
     }
+
 
 }

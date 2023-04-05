@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface DwellerRepository extends CrudRepository<Dweller,Long> {
     List<Dweller> findByApartment(Apartment apartment);
+
 }

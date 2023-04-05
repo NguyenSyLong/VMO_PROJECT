@@ -1,18 +1,17 @@
 package com.apartment.vmoproject.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "service_fee")
@@ -28,6 +27,7 @@ public class Service_Fee {
     private Float unitPrice;
 
     @OneToMany(mappedBy = "service_fee",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("service_fee")
     private List<Bill_Detail> bill_details = new ArrayList<>();
 
 

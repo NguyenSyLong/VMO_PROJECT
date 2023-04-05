@@ -3,13 +3,13 @@ package com.apartment.vmoproject.api.controller;
 import com.apartment.vmoproject.api.controller.dto.response.BillDto;
 import com.apartment.vmoproject.api.model.*;
 import com.apartment.vmoproject.api.service.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,15 +47,22 @@ public class BillController {
 
         long TotalPrice = 0;
         for (Service_Fee sv : listService) {
-            TotalPrice += sv.getUnitPrice();
+            if(sv.getId()==1){
+                TotalPrice += sv.getUnitPrice()*billDto.getWaterConsumption();
+            }else if (sv.getId()==2) {
+                TotalPrice += sv.getUnitPrice()*billDto.getElectricConsumption();
+            }else{
+                TotalPrice += sv.getUnitPrice();
+            }
+
 
         }
 
         Date fromDate = null, toDate = null, dateOfPayment = null;
         try {
-            fromDate = new SimpleDateFormat("dd/MM/yyyy").parse(billDto.getFromDate());
-            toDate = new SimpleDateFormat("dd/MM/yyyy").parse(billDto.getToDate());
-            dateOfPayment = new SimpleDateFormat("dd/MM/yyyy").parse(billDto.getDateOfPayment());
+            fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(billDto.getFromDate());
+            toDate = new SimpleDateFormat("yyyy-MM-dd").parse(billDto.getToDate());
+//            dateOfPayment = new SimpleDateFormat("dd/MM/yyyy").parse(billDto.getDateOfPayment());
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -65,8 +72,9 @@ public class BillController {
         Bill billRequest = Bill.builder()
                 .fromDate(fromDate)
                 .toDate(toDate)
-                .dateOfPayment(dateOfPayment)
                 .totalPrice(TotalPrice)
+                .waterConsumption(billDto.getWaterConsumption())
+                .electricConsumption(billDto.getElectricConsumption())
                 .apartment(apartment.get()).build();
 
         Bill billCreate = billService.save(billRequest);
@@ -81,14 +89,14 @@ public class BillController {
 
         Bill billResponse = billService.save(billCreate);
 
-        for (Dweller dweller: apartment.get().getDwellers()) {
-            if(dweller.getStatus()==true){
-                emailSenderService.sendEmail(dweller.getEmail(),listService,billResponse);
-            }
-
-        }
-
-
+//        for (Dweller dweller: apartment.get().getDwellers()) {
+//            if(dweller.getStatus()==true){
+//                emailSenderService.sendEmail(dweller.getEmail(),listService,billResponse);
+//            }
+//
+//        }
+//
+//
         ResponseObject responseObject = ResponseObject.builder()
                 .status("ok")
                 .message("Find dweller successfully!")
@@ -96,6 +104,99 @@ public class BillController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBill(@PathVariable("id") Long id, @RequestBody BillDto billDto) {
+        Optional<Apartment> apartment = apartmentService.findById(billDto.getApartmentId());
+        List<Service_Fee> listService = service_feeService.findByIdIsIn(billDto.getServiceId());
+        Bill bill = billService.findById(id).get();
+
+
+
+
+
+        List<Bill_Detail> bill_detailo = bill_detailService.findByBill(bill);
+
+        for (Bill_Detail bd: bill_detailo) {
+//            bd.setBill(null);
+//            bd.setService_fee(null);
+//            bill_detailService.save(bd);
+            bill_detailService.deleteById(bd.getId());
+
+        }
+
+
+        for (Service_Fee sv : listService) {
+            Bill_Detail bill_detail = Bill_Detail.builder().bill(bill).service_fee(sv).build();
+            bill.addBillDetail(bill_detail);
+
+        }
+
+        long TotalPrice = 0;
+        for (Service_Fee sv : listService) {
+            if(sv.getId()==1){
+                TotalPrice += sv.getUnitPrice()*billDto.getWaterConsumption();
+            }else if (sv.getId()==2) {
+                TotalPrice += sv.getUnitPrice()*billDto.getElectricConsumption();
+            }else{
+                TotalPrice += sv.getUnitPrice();
+            }
+
+
+        }
+
+        Date fromDate = null, toDate = null, dateOfPayment = null;
+        try {
+            fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(billDto.getFromDate());
+            toDate = new SimpleDateFormat("yyyy-MM-dd").parse(billDto.getToDate());
+            if(billDto.getDateOfPayment()!=null){
+                dateOfPayment = new SimpleDateFormat("yyyy-MM-dd").parse(billDto.getDateOfPayment());
+            }
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        bill.setApartment(apartment.get());
+        bill.setToDate(toDate);
+        bill.setFromDate(fromDate);
+        bill.setDateOfPayment(dateOfPayment);
+        bill.setTotalPrice(TotalPrice);
+        bill.setElectricConsumption(billDto.getElectricConsumption());
+        bill.setWaterConsumption(billDto.getWaterConsumption());
+
+
+
+        Bill billResponse = billService.save(bill);
+
+
+        ResponseObject responseObject = ResponseObject.builder()
+                .status("ok")
+                .message("Update bill successfully!")
+                .data(billResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+
+    }
+    @GetMapping("")
+    public ResponseEntity<?> getAllBill(){
+        List<Bill> bill = (List<Bill>) billService.findAll();
+        ResponseObject responseObject = ResponseObject.builder()
+                .status("ok")
+                .message("Find bill successfully!")
+                .data(bill)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getBillById(@PathVariable Long id){
+        Optional<Bill> bill =  billService.findById(id);
+        ResponseObject responseObject = ResponseObject.builder()
+                .status("ok")
+                .message("Find bill successfully!")
+                .data(bill.get())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
 }

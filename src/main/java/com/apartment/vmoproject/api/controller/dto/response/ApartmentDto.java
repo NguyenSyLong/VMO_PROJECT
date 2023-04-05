@@ -10,6 +10,8 @@ public class ApartmentDto {
 
     private String name;
 
+    private Integer number;
+
     private Float area;
 
     private Long price;
@@ -18,7 +20,6 @@ public class ApartmentDto {
 
     private Integer numOfRoom;
 
-    private Integer numOfDweller;
 
     private Boolean status;
 }
