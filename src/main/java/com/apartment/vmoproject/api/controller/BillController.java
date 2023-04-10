@@ -3,9 +3,6 @@ package com.apartment.vmoproject.api.controller;
 import com.apartment.vmoproject.api.controller.dto.response.BillDto;
 import com.apartment.vmoproject.api.model.*;
 import com.apartment.vmoproject.api.service.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +39,7 @@ public class BillController {
 
     @PostMapping("/insert")
     public ResponseEntity<?> insertBill(@RequestBody BillDto billDto) {
-        Optional<Apartment> apartment = apartmentService.findById(billDto.getApartmentId());
+        Apartment apartment = apartmentService.findById(billDto.getApartmentId());
         List<Service_Fee> listService = service_feeService.findByIdIsIn(billDto.getServiceId());
 
         long TotalPrice = 0;
@@ -75,7 +72,7 @@ public class BillController {
                 .totalPrice(TotalPrice)
                 .waterConsumption(billDto.getWaterConsumption())
                 .electricConsumption(billDto.getElectricConsumption())
-                .apartment(apartment.get()).build();
+                .apartment(apartment).build();
 
         Bill billCreate = billService.save(billRequest);
         List<Bill_Detail> bill_details = new ArrayList<>();
@@ -107,7 +104,7 @@ public class BillController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBill(@PathVariable("id") Long id, @RequestBody BillDto billDto) {
-        Optional<Apartment> apartment = apartmentService.findById(billDto.getApartmentId());
+        Apartment apartment = apartmentService.findById(billDto.getApartmentId());
         List<Service_Fee> listService = service_feeService.findByIdIsIn(billDto.getServiceId());
         Bill bill = billService.findById(id).get();
 
@@ -118,10 +115,11 @@ public class BillController {
         List<Bill_Detail> bill_detailo = bill_detailService.findByBill(bill);
 
         for (Bill_Detail bd: bill_detailo) {
-//            bd.setBill(null);
-//            bd.setService_fee(null);
-//            bill_detailService.save(bd);
-            bill_detailService.deleteById(bd.getId());
+            Optional<Service_Fee> sf = service_feeService.findById(bd.getService_fee().getId());
+            sf.get().getBill_details().remove(bd);
+            service_feeService.save(sf.get());
+            bill.removeBD(bd);
+
 
         }
 
@@ -157,7 +155,7 @@ public class BillController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        bill.setApartment(apartment.get());
+        bill.setApartment(apartment);
         bill.setToDate(toDate);
         bill.setFromDate(fromDate);
         bill.setDateOfPayment(dateOfPayment);

@@ -36,6 +36,8 @@ public class Dweller implements Serializable {
 
     private Boolean status;
 
+    private Boolean isRepresent;
+
     @ManyToOne(optional = false,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "apartment_id",  nullable = false)
     @JsonIgnoreProperties("dwellers")

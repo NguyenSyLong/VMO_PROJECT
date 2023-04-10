@@ -5,6 +5,8 @@ import com.apartment.vmoproject.api.model.Dweller;
 import com.apartment.vmoproject.api.repository.DwellerRepository;
 import com.apartment.vmoproject.api.service.DwellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +23,8 @@ public class DwellerServiceImpl implements DwellerService {
     }
 
     @Override
-    public <S extends Dweller> Iterable<S> saveAll(Iterable<S> entities) {
-        return dwellerRepository.saveAll(entities);
-    }
-
-    @Override
     public Optional<Dweller> findById(Long aLong) {
         return dwellerRepository.findById(aLong);
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return dwellerRepository.existsById(aLong);
     }
 
     @Override
@@ -41,44 +33,24 @@ public class DwellerServiceImpl implements DwellerService {
     }
 
     @Override
-    public Iterable<Dweller> findAllById(Iterable<Long> longs) {
-        return dwellerRepository.findAllById(longs);
-    }
-
-    @Override
     public long count() {
         return dwellerRepository.count();
     }
 
-    @Override
-    public void deleteById(Long aLong) {
-        dwellerRepository.deleteById(aLong);
-    }
 
     @Override
     public void delete(Dweller entity) {
         dwellerRepository.delete(entity);
     }
 
+
     @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
-        dwellerRepository.deleteAllById(longs);
+    public Page<Dweller> findByNameContainingWithPagination(int pageNumber, int pageSize, String name) {
+        return dwellerRepository.findByNameContaining(PageRequest.of(pageNumber,pageSize),name);
     }
 
     @Override
-    public void deleteAll(Iterable<? extends Dweller> entities) {
-        dwellerRepository.deleteAll(entities);
+    public Page<Dweller> findByNameContainingAndStatusWithPagination(int pageNumber, int pageSize, String name, Boolean status) {
+        return dwellerRepository.findByNameContainingAndStatus(PageRequest.of(pageNumber,pageSize), name, status);
     }
-
-    @Override
-    public List<Dweller> findByApartment(Apartment apartment) {
-        return dwellerRepository.findByApartment(apartment);
-    }
-
-    @Override
-    public void deleteAll() {
-        dwellerRepository.deleteAll();
-    }
-
-
 }

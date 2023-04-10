@@ -14,29 +14,17 @@ public interface ApartmentService {
 
     <S extends Apartment> S save(S entity);
 
-    <S extends Apartment> Iterable<S> saveAll(Iterable<S> entities);
-
-    Optional<Apartment> findById(Long aLong);
-
-    boolean existsById(Long aLong);
+    Apartment findById(Long aLong);
 
     List<Apartment> findAll();
 
-    Iterable<Apartment> findAllById(Iterable<Long> longs);
-
     long count();
-
-    void deleteById(Long aLong);
 
     void delete(Apartment entity);
 
-    void deleteAllById(Iterable<? extends Long> longs);
-
-    void deleteAll(Iterable<? extends Apartment> entities);
-
     Page<Apartment> findByNumberContainingWithPagination(int pagenumber, int pageSize, Integer number);
 
-    void deleteAll();
+    Page<Apartment> findByNumberContainingAndAndStatusWithPagination(int pagenumber, int pageSize, String number, Boolean status);
 
     Page<Apartment> findProductWithPagination(int offset, int pageSize);
 }

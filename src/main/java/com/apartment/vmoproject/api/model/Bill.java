@@ -35,16 +35,17 @@ public class Bill {
 
     private Long electricConsumption;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "apartment_id")
     @JsonIgnoreProperties("bills")
     private Apartment apartment;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonIgnoreProperties("bill")
     private List<Bill_Detail> bill_details = new ArrayList<>();
 
-    public void removeBillDetail(Bill_Detail bd) {
+    public void removeBD(Bill_Detail bd)
+    {
         this.bill_details.remove(bd);
 
     }

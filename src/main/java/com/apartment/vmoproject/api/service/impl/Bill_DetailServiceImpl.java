@@ -27,18 +27,8 @@ public class Bill_DetailServiceImpl implements Bill_DetailService {
     }
 
     @Override
-    public <S extends Bill_Detail> Iterable<S> saveAll(Iterable<S> entities) {
-        return bill_detailRepository.saveAll(entities);
-    }
-
-    @Override
     public Optional<Bill_Detail> findById(Long aLong) {
         return bill_detailRepository.findById(aLong);
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return bill_detailRepository.existsById(aLong);
     }
 
     @Override
@@ -47,18 +37,8 @@ public class Bill_DetailServiceImpl implements Bill_DetailService {
     }
 
     @Override
-    public Iterable<Bill_Detail> findAllById(Iterable<Long> longs) {
-        return bill_detailRepository.findAllById(longs);
-    }
-
-    @Override
     public long count() {
         return bill_detailRepository.count();
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        bill_detailRepository.deleteById(aLong);
     }
 
     @Override
@@ -66,18 +46,4 @@ public class Bill_DetailServiceImpl implements Bill_DetailService {
         bill_detailRepository.delete(entity);
     }
 
-    @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
-        bill_detailRepository.deleteAllById(longs);
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Bill_Detail> entities) {
-        bill_detailRepository.deleteAll(entities);
-    }
-
-    @Override
-    public void deleteAll() {
-        bill_detailRepository.deleteAll();
-    }
 }

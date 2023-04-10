@@ -2,11 +2,13 @@ package com.apartment.vmoproject.api.controller;
 
 
 import com.apartment.vmoproject.api.controller.dto.response.Service_FeeDto;
+import com.apartment.vmoproject.api.model.Dweller;
 import com.apartment.vmoproject.api.model.ResponseObject;
 import com.apartment.vmoproject.api.model.Service_Fee;
 import com.apartment.vmoproject.api.service.impl.Service_FeeServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +54,29 @@ public class Service_FeeController {
                 .status("OK")
                 .message("Find All!!")
                 .data(serviceFeeResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+    @GetMapping("/{pageNumber}/{pageSize}/{name}")
+    public ResponseEntity<?> getAllService_FeeByPaging(@PathVariable("pageNumber") int pageNumber,
+                                                       @PathVariable("pageSize") int pageSize,
+                                                       @PathVariable(name="name") String name) {
+        Page<Service_Fee> serviceFees = null;
+
+        if (!name.equals("null")){
+
+
+            serviceFees = service_feeService.findService_FeeByName(pageNumber,pageSize,name);
+        }else {
+            serviceFees = service_feeService.findService_FeeByName(pageNumber,pageSize,"");
+        }
+
+        ResponseObject response = ResponseObject.builder()
+                .status("OK")
+                .message("Find All!!")
+                .data(serviceFees)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

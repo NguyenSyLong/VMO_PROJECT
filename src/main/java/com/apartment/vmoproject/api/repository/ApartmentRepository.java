@@ -13,5 +13,5 @@ import java.util.List;
 public interface ApartmentRepository extends JpaRepository<Apartment,Long> {
     List<Apartment> findAll();
     Page<Apartment> findByNumberContaining(PageRequest pageRequest, Integer number);
-
+    Page<Apartment> findByNumberContainingAndAndStatus(PageRequest pageRequest, String number, Boolean status);
 }

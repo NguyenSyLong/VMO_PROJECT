@@ -10,6 +10,7 @@ import org.hibernate.annotations.NotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,17 +50,18 @@ public class DwellerController {
             @RequestParam("dateOfBirth") String date,
             @RequestParam("gender") Boolean gender,
             @RequestParam("status") Boolean status,
-            @RequestParam("apartmentId") Long apartmentId
+            @RequestParam("apartmentId") Long apartmentId,
+            @RequestParam("isRepresent") Boolean isRepresent
     ) throws ParseException {
 
-        Optional<Apartment> apartment = apartmentService.findById(apartmentId);
+        Apartment apartment = apartmentService.findById(apartmentId);
 
         String frontSidePath = this.fileService.saveFile(frontSideImage);
 
         String backSidePath = this.fileService.saveFile(backSideImage);
 
         Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        apartment.get().setStatus(true);
+        apartment.setStatus(true);
         Dweller dwellerRequest = Dweller.builder()
                 .name(name)
                 .email(email)
@@ -68,7 +70,8 @@ public class DwellerController {
                 .dateOfBirth(dob)
                 .gender(gender)
                 .status(status)
-                .apartment(apartment.get())
+                .apartment(apartment)
+                .isRepresent(isRepresent)
                 .build();
 
 
@@ -95,10 +98,11 @@ public class DwellerController {
             @RequestParam("dateOfBirth") String date,
             @RequestParam("gender") Boolean gender,
             @RequestParam("status") Boolean status,
-            @RequestParam("apartmentId") Long apartmentId
+            @RequestParam("apartmentId") Long apartmentId,
+            @RequestParam("isRepresent") Boolean isRepresent
     ) throws ParseException {
         String frontSidePath, backSidePath;
-        Optional<Apartment> apartment = apartmentService.findById(apartmentId);
+        Apartment apartment = apartmentService.findById(apartmentId);
         Optional<Dweller> dweller = dwellerService.findById(id);
         if(frontSideImage != null){
             frontSidePath = this.fileService.saveFile(frontSideImage);
@@ -115,11 +119,11 @@ public class DwellerController {
 
         Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         if(status==false){
-            if(apartment.get().getDwellers().size()==1){
-                apartment.get().setStatus(false);
+            if(apartment.getDwellers().size()==1){
+                apartment.setStatus(false);
             }
         }else{
-            apartment.get().setStatus(true);
+            apartment.setStatus(true);
         }
 
         Dweller dwellerRequest = Dweller.builder()
@@ -130,7 +134,8 @@ public class DwellerController {
                 .dateOfBirth(dob)
                 .gender(gender)
                 .status(status)
-                .apartment(apartment.get())
+                .apartment(apartment)
+                .isRepresent(isRepresent)
                 .id(dweller.get().getId())
                 .build();
 
@@ -163,6 +168,37 @@ public class DwellerController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 
     }
+
+    @GetMapping("/{pageNumber}/{pageSize}/{name}/{status}")
+    public ResponseEntity<?> getDwellerByPaging(@PathVariable("pageNumber") int pageNumber,
+                                                @PathVariable("pageSize") int pageSize,
+                                                @PathVariable(name="name") String name,@PathVariable(name = "status") String status) {
+        Page<Dweller> dwellers = null;
+
+        if (!name.equals("null")&&!status.equals("null")){
+
+            Boolean status1 = Boolean.parseBoolean(status);
+            dwellers = dwellerService.findByNameContainingAndStatusWithPagination(pageNumber,pageSize,name,status1);
+        }else if(!name.equals("null") && status.equals("null")){
+
+            dwellers = dwellerService.findByNameContainingWithPagination(pageNumber,pageSize,name);
+        }else if(name.equals("null") && !status.equals("null")){
+            Boolean status1 = Boolean.parseBoolean(status);
+            dwellers = dwellerService.findByNameContainingAndStatusWithPagination(pageNumber,pageSize,"",status1);
+        }else {
+            dwellers = dwellerService.findByNameContainingWithPagination(pageNumber,pageSize,"");
+        }
+
+
+        ResponseObject responseObject = ResponseObject.builder()
+                .status("ok")
+                .message("Find alll")
+                .data(dwellers)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDwellerById(@PathVariable("id") Long id) {

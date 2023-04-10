@@ -4,12 +4,14 @@ package com.apartment.vmoproject.api.controller;
 import com.apartment.vmoproject.api.model.AuthenticationResponse;
 import com.apartment.vmoproject.api.model.AuthenticationRequest;
 import com.apartment.vmoproject.api.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @RequestMapping(path = "/api/v1/auth")
 public class AuthController {
     private final AuthenticationService service;

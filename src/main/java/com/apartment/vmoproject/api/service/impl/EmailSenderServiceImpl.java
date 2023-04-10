@@ -26,7 +26,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         String content = "";
         content += "Service Expense: \n";
         for (Service_Fee sv : fees) {
-            content += sv.getName()+": "+ sv.getUnitPrice()+"\n";
+            if(sv.getId()==1){
+                content+= sv.getName() +": "+ sv.getUnitPrice()+" * "+ bill.getWaterConsumption()+"(m3) = "+sv.getUnitPrice()*bill.getWaterConsumption()+"\n";
+            }else if (sv.getId()==2){
+                content+= sv.getName() +": "+ sv.getUnitPrice()+" * "+ bill.getElectricConsumption()+"(Kwh) = "+sv.getUnitPrice()*bill.getElectricConsumption()+"\n";
+            }else {
+                content += sv.getName()+": "+ sv.getUnitPrice()+"\n";
+            }
+
 
         }
 
@@ -36,5 +43,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         message.setText(content);
 
         javaMailSender.send(message);
+        System.out.println("Send successFully!!!");
     }
 }
