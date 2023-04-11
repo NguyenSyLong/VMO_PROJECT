@@ -8,8 +8,8 @@ import lombok.*;
 @Data
 @Builder
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "Account")
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

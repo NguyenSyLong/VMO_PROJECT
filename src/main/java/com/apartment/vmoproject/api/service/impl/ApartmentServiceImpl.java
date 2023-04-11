@@ -23,12 +23,23 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
-    public Apartment findById(Long aLong) {
-        return apartmentRepository.findById(aLong).orElseThrow(()->{
-            throw new NotFoundException("Not found Apartment "+ aLong);
+    public Apartment findById(Long id) {
+        return apartmentRepository.findById(id).orElseThrow(()->{
+            throw new NotFoundException("Not found Apartment "+ id);
         });
     }
 
+    @Override
+    public Apartment updateApartment(Apartment apartment, Long id){
+        Optional<Apartment> apartmentOld = apartmentRepository.findById(id);
+        if(apartmentOld==null){
+            throw new NotFoundException("Not found Apartment "+ id);
+        }
+        apartment.setId(id);
+        return apartmentRepository.save(apartment);
+
+
+    }
 
     @Override
     public List<Apartment> findAll() {

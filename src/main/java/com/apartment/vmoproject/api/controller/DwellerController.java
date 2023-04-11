@@ -56,9 +56,9 @@ public class DwellerController {
 
         Apartment apartment = apartmentService.findById(apartmentId);
 
-        String frontSidePath = this.fileService.saveFile(frontSideImage);
+        String frontSidePath = fileService.saveFile(frontSideImage);
 
-        String backSidePath = this.fileService.saveFile(backSideImage);
+        String backSidePath = fileService.saveFile(backSideImage);
 
         Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         apartment.setStatus(true);
@@ -105,12 +105,12 @@ public class DwellerController {
         Apartment apartment = apartmentService.findById(apartmentId);
         Optional<Dweller> dweller = dwellerService.findById(id);
         if(frontSideImage != null){
-            frontSidePath = this.fileService.saveFile(frontSideImage);
+            frontSidePath = fileService.saveFile(frontSideImage);
         }else{
             frontSidePath = dweller.get().getFrontSideImage();
         }
         if(backSideImage != null){
-            backSidePath = this.fileService.saveFile(backSideImage);
+            backSidePath = fileService.saveFile(backSideImage);
         }else{
             backSidePath = dweller.get().getBackSideImage();
         }

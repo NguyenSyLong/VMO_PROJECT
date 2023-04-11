@@ -1,7 +1,6 @@
 package com.apartment.vmoproject.api.filter;
 
-import com.apartment.vmoproject.api.service.UserService;
-import com.apartment.vmoproject.api.service.impl.UserServiceImpl;
+import com.apartment.vmoproject.api.service.impl.AccountServiceImpl;
 import com.apartment.vmoproject.api.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,8 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -29,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserServiceImpl customUserDetailsService;
+    private AccountServiceImpl customUserDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,

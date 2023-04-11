@@ -1,18 +1,16 @@
 package com.apartment.vmoproject.api.config;
 
 import com.apartment.vmoproject.api.model.CustomUserDetail;
-import com.apartment.vmoproject.api.model.User;
-import com.apartment.vmoproject.api.repository.UserRepository;
+import com.apartment.vmoproject.api.model.Account;
+import com.apartment.vmoproject.api.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +21,7 @@ import java.util.Optional;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserRepository repository;
+    private final AccountRepository repository;
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -32,7 +30,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            Optional<User> user = repository.findByUsername(username);
+            Optional<Account> user = repository.findByUsername(username);
             if (user.get() != null) {
 
                 return new CustomUserDetail(user.get());

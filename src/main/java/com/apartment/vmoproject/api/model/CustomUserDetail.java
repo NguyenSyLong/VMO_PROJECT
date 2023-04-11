@@ -13,7 +13,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class CustomUserDetail implements UserDetails  {
 
-    User user;
+    Account user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

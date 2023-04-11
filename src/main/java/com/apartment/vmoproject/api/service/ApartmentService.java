@@ -16,6 +16,8 @@ public interface ApartmentService {
 
     Apartment findById(Long aLong);
 
+    Apartment updateApartment(Apartment apartment, Long id);
+
     List<Apartment> findAll();
 
     long count();

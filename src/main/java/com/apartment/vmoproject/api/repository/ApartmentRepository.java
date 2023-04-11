@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface ApartmentRepository extends JpaRepository<Apartment,Long> {
     List<Apartment> findAll();
+    Apartment findApartmentById(Long id);
     Page<Apartment> findByNumberContaining(PageRequest pageRequest, Integer number);
     Page<Apartment> findByNumberContainingAndAndStatus(PageRequest pageRequest, String number, Boolean status);
 }

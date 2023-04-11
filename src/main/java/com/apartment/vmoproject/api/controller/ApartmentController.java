@@ -108,10 +108,8 @@ public class ApartmentController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateApartment(@PathVariable("id") Long id, @RequestBody ApartmentDto apartmentDto) {
         Apartment apartmentRequest = modelMapper.map(apartmentDto, Apartment.class);
-        apartmentRequest.setId(id);
 
-
-        Apartment apartmentResponse = apartmentService.save(apartmentRequest);
+        Apartment apartmentResponse = apartmentService.updateApartment(apartmentRequest, id);
 
         ResponseObject response = ResponseObject.builder().
                 message("Update apartment successfully!!")
