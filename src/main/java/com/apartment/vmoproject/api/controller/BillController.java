@@ -102,6 +102,7 @@ public class BillController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBill(@PathVariable("id") Long id, @RequestBody BillDto billDto) {
         Apartment apartment = apartmentService.findById(billDto.getApartmentId());
@@ -186,6 +187,7 @@ public class BillController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getBillById(@PathVariable Long id){
         Optional<Bill> bill =  billService.findById(id);

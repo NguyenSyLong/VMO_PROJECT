@@ -1,10 +1,8 @@
-package com.apartment.vmoproject.api.repository;
+package com.apartment.vmoproject.api.service;
 
-import com.apartment.vmoproject.api.exception.NotFoundException;
 import com.apartment.vmoproject.api.model.Apartment;
-import com.apartment.vmoproject.api.service.ApartmentService;
+import com.apartment.vmoproject.api.repository.ApartmentRepository;
 import com.apartment.vmoproject.api.service.impl.ApartmentServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,8 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ApartmentServiceTest {

@@ -6,12 +6,14 @@ import com.apartment.vmoproject.api.model.ResponseObject;
 import com.apartment.vmoproject.api.service.ApartmentService;
 import com.apartment.vmoproject.api.service.DwellerService;
 import com.apartment.vmoproject.api.service.FileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.hibernate.annotations.NotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(path = "api/v1/dweller")
 public class DwellerController {
@@ -41,7 +44,7 @@ public class DwellerController {
     @Autowired
     private FileService fileService;
 
-    @PostMapping("/insert")
+    @PostMapping(value = "/insert", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> insertDweller(
             @RequestParam("frontSideImage") MultipartFile frontSideImage,
             @RequestParam("backSideImage") MultipartFile backSideImage,
@@ -88,7 +91,7 @@ public class DwellerController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> editDweller(
             @PathVariable("id") Long id,
             @RequestParam(name = "frontSideImage",required = false) MultipartFile frontSideImage,
